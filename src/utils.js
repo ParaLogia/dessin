@@ -29,10 +29,22 @@ function scaleFrom(ctx, scaleX, scaleY, centerX, centerY) {
   ctx.translate(-centerX, -centerY);
 }
 
+function rotateAround(ctx, angle, centerX, centerY) {
+  ctx.translate(-centerX, -centerY);
+  ctx.rotate(angle);
+  ctx.translate(centerX, centerY);
+}
+
 function applyTransform(ctx, params) {
   const { scale, rotate, translate } = params;
   scaleFrom(ctx, ...scale, ...translate);
-  ctx.rotate(rotate);
+  rotateAround(ctx, rotate, 0, 0);
+}
+
+function applyInvertedTransform(ctx, params) {
+  const { scale, rotate, translate } = params;
+  rotateAround(ctx, rotate, 0, 0);
+  scaleFrom(ctx, ...scale, ...translate);
 }
 
 function invertTransform(params) {
@@ -55,5 +67,6 @@ module.exports = {
   interpolateVectorLogarithmic,
   scaleFrom,
   applyTransform,
+  applyInvertedTransform,
   invertTransform
 }

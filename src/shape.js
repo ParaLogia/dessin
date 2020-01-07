@@ -1,15 +1,10 @@
-const { 
-  applyTransform, 
-  interpolateNumberLinear, 
-  interpolateVectorLogarithmic, 
-  invertTransform 
-} = require('./utils');
+const Utils = require('./utils');
 
 const defaults = {
   scale: [1, 1],
   rotate: 0,
   translate: [0, 0],
-  colors: ['red', 'orange', 'yellow']
+  colors: ['#26532B', '#399E5A', '#5ABCB9', '#63E2C6', '#6EF9F5']
 }
 
 class Shape {
@@ -35,7 +30,7 @@ class Shape {
 
   transformStep() {
     const { ctx, scale, rotate, translate } = this;
-    applyTransform(ctx, { scale, rotate, translate });
+    Utils.applyTransform(ctx, { scale, rotate, translate });
   }
 
   draw(baseTransform, depth, cycle) {
@@ -51,7 +46,7 @@ class Shape {
     const cycleDepth = ((depth + cycleLength - cycle % cycleLength) % cycleLength);
     ctx.fillStyle = this.colors[cycleDepth];
     ctx.fill();
-    // ctx.stroke();
+    ctx.stroke();
     // ctx.restore();
 
     ctx.save();
@@ -62,18 +57,18 @@ class Shape {
 
   interpolateTransform(proportion) {
     const params = {};
-    params.scale = interpolateVectorLogarithmic(defaults.scale, this.scale, proportion);
-    params.rotate = interpolateNumberLinear(defaults.rotate, this.rotate, proportion);
+    params.scale = Utils.interpolateVectorLogarithmic(defaults.scale, this.scale, proportion);
+    params.rotate = Utils.interpolateNumberLinear(defaults.rotate, this.rotate, proportion);
     params.translate = this.translate;
     return params;
   }
 
   interpolateInverseTransform(proportion) {
     const { scale, rotate, translate } = this;
-    const invertParams = invertTransform({ scale, rotate, translate });
+    const invertParams = Utils.invertTransform({ scale, rotate, translate });
     const params = {};
-    params.scale = interpolateVectorLogarithmic(defaults.scale, invertParams.scale, proportion);
-    params.rotate = interpolateNumberLinear(defaults.rotate, invertParams.rotate, proportion);
+    params.scale = Utils.interpolateVectorLogarithmic(defaults.scale, invertParams.scale, proportion);
+    params.rotate = Utils.interpolateNumberLinear(defaults.rotate, invertParams.rotate, proportion);
     params.translate = translate;
     return params;
   }
