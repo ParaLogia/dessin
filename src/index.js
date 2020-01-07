@@ -1,6 +1,6 @@
 import "./styles/index.scss";
 import Shape from './shape';
-const { transform } = require('./utils');
+const Utils = require('./utils');
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById('canvas');
@@ -20,20 +20,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const shape = new Shape(options);
 
-  let step = 10;
+
+  let step = 0;
+  const cycleSteps = 100;
+
   const doStep = () => {
     ctx.resetTransform();
     ctx.clearRect(0, 0, 600, 600);
     ctx.translate(300, 300);
-    transform(ctx, shape.interpolateTransform(step / 10));
+    Utils.applyTransform(ctx, shape.interpolateInverseTransform(1.0));
+    Utils.applyTransform(ctx, shape.interpolateInverseTransform((step % cycleSteps) / cycleSteps));
     const baseTransform = ctx.getTransform();
     
-    shape.draw(baseTransform, 7);
-    step--;
+    shape.draw(baseTransform, 12, Math.floor(step/cycleSteps));
+    step++;
 
-    if (step >= 0) {
-      setTimeout(doStep, 500);
-    }
+    setTimeout(doStep, 50);
   }
 
   doStep();
