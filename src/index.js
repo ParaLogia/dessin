@@ -42,7 +42,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const shape = new Shape(options);
 
   let step = 0;
-  const cycleSteps = 100;
+  const cycleSteps = 60;
   const startingDepth = 2;
   const maxDepth = 5000;
   const [ xScale, yScale ] = shape.scale;
@@ -64,7 +64,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     ctx.restore();
 
-    setTimeout(doStep, 20);
+    requestAnimationFrame(doStep);
   }
 
   ctx.translate(width/2, height/2);
@@ -72,5 +72,5 @@ window.addEventListener("DOMContentLoaded", () => {
   // shape.tracePath();
   // ctx.clip();
 
-  doStep();
+  requestAnimationFrame(doStep);
 });
