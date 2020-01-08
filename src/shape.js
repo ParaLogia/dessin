@@ -3,7 +3,7 @@ const Utils = require('./utils');
 const defaults = {
   scale: [1, 1],
   rotate: 0,
-  translate: [0, 0],
+  scaleCenter: [0, 0],
   colors: ['#399E5A', '#5ABCB9', '#26532B', '#63E2C6', '#6EF9F5']
 }
 
@@ -11,10 +11,10 @@ class Shape {
   constructor(options) {
     this.ctx = options.ctx;
     this.vertices = options.vertices;
-    this.baseTransform = options.baseTransform;
     this.scale = options.scale || defaults.scale;
     this.rotate = options.rotate || defaults.rotate;
-    this.translate = options.translate || defaults.translate;
+    this.scaleCenter = options.scaleCenter || defaults.scaleCenter;
+    this.vanishingPt = options.vanishingPt || this.scaleCenter;
     this.colors = options.colors || defaults.colors;
   }
 
@@ -29,48 +29,37 @@ class Shape {
   }
 
   transformStep() {
-    const { ctx, scale, rotate, translate } = this;
-    Utils.applyTransform(ctx, { scale, rotate, translate });
+    const { ctx, scale, rotate, scaleCenter } = this;
+    Utils.applyTransform(ctx, { scale, rotate, scaleCenter });
   }
 
-  draw(baseTransform, depth, cycle) {
+  draw(depth, cycle) {
     if (depth <= 0) 
       return;
 
     const { ctx } = this;
     this.tracePath(ctx);
 
-    // ctx.save();
-    // ctx.setTransform(baseTransform);
     const cycleLength = this.colors.length;
     const cycleDepth = ((depth + cycleLength - cycle % cycleLength) % cycleLength);
     ctx.fillStyle = this.colors[cycleDepth];
     ctx.fill();
-    // ctx.stroke();
-    // ctx.restore();
 
     ctx.save();
     this.transformStep();
-    this.draw(baseTransform, depth - 1, cycle);
+    this.draw(depth - 1, cycle);
     ctx.restore();
   }
 
-  interpolateTransform(proportion) {
-    const params = {};
-    params.scale = Utils.interpolateVectorLogarithmic(defaults.scale, this.scale, proportion);
-    params.rotate = Utils.interpolateNumberLinear(defaults.rotate, this.rotate, proportion);
-    params.translate = this.translate;
-    return params;
-  }
+  zoomOut(proportion) {
+    const { ctx, scale, rotate, vanishingPt } = this;
+    const params = Utils.invertTransform({ scale, rotate });
+    params.scale = Utils.interpolateVectorLogarithmic(defaults.scale, params.scale, proportion);
+    params.rotate = Utils.interpolateNumberLinear(defaults.rotate, params.rotate, proportion);
+    params.scaleCenter = vanishingPt;
+    params.rotateCenter = vanishingPt;
 
-  interpolateInverseTransform(proportion) {
-    const { scale, rotate, translate } = this;
-    const invertParams = Utils.invertTransform({ scale, rotate, translate });
-    const params = {};
-    params.scale = Utils.interpolateVectorLogarithmic(defaults.scale, invertParams.scale, proportion);
-    params.rotate = Utils.interpolateNumberLinear(defaults.rotate, invertParams.rotate, proportion);
-    params.translate = translate;
-    return params;
+    Utils.applyTransform(ctx, params);
   }
 }
 

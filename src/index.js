@@ -1,6 +1,5 @@
 import "./styles/index.scss";
 import Shape from './shape';
-const Utils = require('./utils');
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById('canvas');
@@ -15,22 +14,23 @@ window.addEventListener("DOMContentLoaded", () => {
   options = {
     vertices: [[-200, -200], [200, -200], [200, 200], [-200, 200]],
     scale: [0.5, 0.5],
-    translate: [-200, -200],
+    scaleCenter: [-200, -200],
     rotate: -Math.PI/2,
+    vanishingPt: [-120, -40],
     ctx
   }
 
-  options = {
-    vertices: [
-      [-200, 200 * Math.sqrt(3) / 3], 
-      [200, 200 * Math.sqrt(3) / 3], 
-      [0, -400 * Math.sqrt(3) / 3]
-    ],
-    scale: [0.5, 0.5],
-    // translate: [0, 200 * Math.sqrt(3) / 3],
-    rotate: Math.PI/3,
-    ctx
-  }
+  // options = {
+  //   vertices: [
+  //     [-200, 200 * Math.sqrt(3) / 3], 
+  //     [200, 200 * Math.sqrt(3) / 3], 
+  //     [0, -400 * Math.sqrt(3) / 3]
+  //   ],
+  //   scale: [0.5, 0.5],
+  //   // scaleCenter: [0, 200 * Math.sqrt(3) / 3],
+  //   rotate: Math.PI,
+  //   ctx
+  // }
 
   const shape = new Shape(options);
 
@@ -39,13 +39,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const doStep = () => {
     ctx.save();
-    // ctx.clearRect(-300, -300, 600, 600);
-    // Utils.applyInvertedTransform(ctx, shape.interpolateInverseTransform(1.0));
+    ctx.clearRect(-300, -300, 600, 600);
+    const proportion = 2 + (step % cycleSteps) / cycleSteps;
 
-    Utils.applyInvertedTransform(ctx, shape.interpolateInverseTransform((step % cycleSteps) / cycleSteps));
-    const baseTransform = ctx.getTransform();
+    shape.zoomOut(proportion)
     
-    shape.draw(baseTransform, 15, Math.floor(step/cycleSteps));
+    shape.draw(15, Math.floor(step/cycleSteps));
     step++;
 
     ctx.restore();
