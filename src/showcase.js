@@ -12,43 +12,9 @@ class Showcase {
     this.playing = false;
     this.step = 0;
 
-    this.initializeShape();
+    this.shape = Shape.TRIANGLE(this.ctx, this.width, this.height);
     this.ctx.translate(this.width / 2, this.height / 2);
     this.animate = this.animate.bind(this);
-  }
-
-  initializeShape() {
-    let options;
-    options = {
-      vertices: [[-1, -1], [1, -1], [1, 1], [-1, 1]],
-      scale: [0.5, 0.5],
-      scaleCenter: [-1, -1],
-      rotate: -Math.PI / 2,
-      ctx: this.ctx
-    }
-    // options = {
-    //   vertices: [
-    //     [-1, 1 * Math.sqrt(3) / 3],
-    //     [1, 1 * Math.sqrt(3) / 3],
-    //     [0, -2 * Math.sqrt(3) / 3]
-    //   ],
-    //   scale: [0.66666, 0.66666],
-    //   scaleCenter: [1, Math.sqrt(3) / 3],
-    //   rotate: 2 * Math.PI / 3,
-    //   ctx
-    // }
-
-    const { width, height } = this;
-
-    for (let i = 0; i < options.vertices.length; i++) {
-      options.vertices[i][0] *= width / 2;
-      options.vertices[i][1] *= height / 2;
-    }
-
-    options.scaleCenter[0] *= width / 2;
-    options.scaleCenter[1] *= height / 2;
-
-    this.shape = new Shape(options);
   }
 
   play() {

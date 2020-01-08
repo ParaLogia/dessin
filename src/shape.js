@@ -73,6 +73,51 @@ class Shape {
     this.fixedPoint = Utils.fixedPoint(matrix);
     ctx.restore();
   }
+
+  static SQUARE(ctx, width, height) {
+    const options = {
+      vertices: [[-1, -1], [1, -1], [1, 1], [-1, 1]],
+      scale: [0.5, 0.5],
+      scaleCenter: [-1, -1],
+      rotate: -Math.PI / 2,
+      ctx
+    }
+
+    for (let i = 0; i < options.vertices.length; i++) {
+      options.vertices[i][0] *= width / 2;
+      options.vertices[i][1] *= height / 2;
+    }
+
+    options.scaleCenter[0] *= width / 2;
+    options.scaleCenter[1] *= height / 2;
+
+    return new Shape(options);
+  }
+
+  static TRIANGLE(ctx, width, height) {
+    options = {
+      vertices: [
+        [-1, 1 * Math.sqrt(3) / 3],
+        [1, 1 * Math.sqrt(3) / 3],
+        [0, -2 * Math.sqrt(3) / 3]
+      ],
+      scale: [0.58, 0.58],
+      scaleCenter: [0, 0],
+      rotate: Math.PI / 2,
+      ctx
+    }
+
+    for (let i = 0; i < options.vertices.length; i++) {
+      options.vertices[i][0] *= width / 2;
+      options.vertices[i][1] *= height / 2;
+    }
+
+    options.scaleCenter[0] *= width / 2;
+    options.scaleCenter[1] *= height / 2;
+    
+    return new Shape(options);
+  }
+  
 }
 
 module.exports = Shape;
