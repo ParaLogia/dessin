@@ -4,7 +4,7 @@ const defaults = {
   scale: [1, 1],
   rotate: 0,
   translate: [0, 0],
-  colors: ['#26532B', '#399E5A', '#5ABCB9', '#63E2C6', '#6EF9F5']
+  colors: ['#399E5A', '#5ABCB9', '#26532B', '#63E2C6', '#6EF9F5']
 }
 
 class Shape {
@@ -46,7 +46,7 @@ class Shape {
     const cycleDepth = ((depth + cycleLength - cycle % cycleLength) % cycleLength);
     ctx.fillStyle = this.colors[cycleDepth];
     ctx.fill();
-    ctx.stroke();
+    // ctx.stroke();
     // ctx.restore();
 
     ctx.save();

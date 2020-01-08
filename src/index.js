@@ -10,11 +10,25 @@ window.addEventListener("DOMContentLoaded", () => {
   ctx.fillStyle = `rgb(100, 180, 250)`;
   ctx.lineWidth = 2;
 
-  const options = {
+  let options;
+
+  options = {
     vertices: [[-200, -200], [200, -200], [200, 200], [-200, 200]],
     scale: [0.5, 0.5],
     translate: [-200, -200],
-    rotate: Math.PI/2,
+    rotate: -Math.PI/2,
+    ctx
+  }
+
+  options = {
+    vertices: [
+      [-200, 200 * Math.sqrt(3) / 3], 
+      [200, 200 * Math.sqrt(3) / 3], 
+      [0, -400 * Math.sqrt(3) / 3]
+    ],
+    scale: [0.5, 0.5],
+    // translate: [0, 200 * Math.sqrt(3) / 3],
+    rotate: Math.PI/3,
     ctx
   }
 
@@ -24,20 +38,26 @@ window.addEventListener("DOMContentLoaded", () => {
   const cycleSteps = 100;
 
   const doStep = () => {
-    ctx.resetTransform();
-    ctx.clearRect(0, 0, 600, 600);
-    ctx.translate(300, 300);
+    ctx.save();
+    // ctx.clearRect(-300, -300, 600, 600);
     // Utils.applyInvertedTransform(ctx, shape.interpolateInverseTransform(1.0));
-    // Utils.applyInvertedTransform(ctx, shape.interpolateInverseTransform(1.0));
-    // Utils.applyInvertedTransform(ctx, shape.interpolateInverseTransform(1.0));
+
     Utils.applyInvertedTransform(ctx, shape.interpolateInverseTransform((step % cycleSteps) / cycleSteps));
     const baseTransform = ctx.getTransform();
     
-    shape.draw(baseTransform, 10, Math.floor(step/cycleSteps));
+    shape.draw(baseTransform, 15, Math.floor(step/cycleSteps));
     step++;
 
-    setTimeout(doStep, 50);
+    ctx.restore();
+
+    setTimeout(doStep, 20);
   }
+
+  ctx.resetTransform();
+  ctx.translate(300, 300);
+
+  shape.tracePath();
+  ctx.clip();
 
   doStep();
 });
