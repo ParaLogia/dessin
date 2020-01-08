@@ -52,6 +52,53 @@ function invertTransform(params) {
   }
 }
 
+
+// Finds the fixed point of an affine transformation represented by a 3x3 matrix
+function fixedPoint(matrix) {
+  // const [[a, c, dx], [b, d, dy], ..._] = matrix;
+  const { a, b, c, d, e: dx, f: dy } = matrix;
+
+  const subMatrix = [
+    [ 1-a,  0-c ],
+    [ 0-b,  1-d ]
+  ]
+  const invSubMatrix = invertMatrix(subMatrix);
+  const transVec = [dx, dy];
+  return matVecMultiply(invSubMatrix, transVec);
+}
+
+// Inverts a matrix representing an affine transformation
+// Based on this SO answer: https://stackoverflow.com/a/10896904
+function invertMatrix(matrix) {
+  const [[a, c, dx], [b, d, dy], ..._] = matrix;
+  // const { a, b, c, d, e: dx, f: dy } = matrix;
+  
+  const det = a*d - b*c; 
+
+  if (dx || dy) {
+    return [
+      [  d/det,   -c/det,   (c*dy-d*dx)/det ],
+      [ -b/det,    a/det,   (b*dx-a*dy)/det ],
+      [ 0,         0,       1               ]
+    ]
+  } else {
+    return [
+      [  d/det,   -c/det ],
+      [ -b/det,    a/det ]  
+    ]
+  }
+}
+
+function matVecMultiply(mat, vec) {
+  const res = vec.map(() => 0);
+  for (let i = 0; i < mat.length; i++) {
+    for (let j = 0; j < vec.length; j++) {
+      res[i] += vec[j]*mat[i][j];
+    }
+  }
+  return res;
+}
+
 module.exports = {
   interpolateNumberLinear, 
   interpolateNumberLogarithmic, 
@@ -60,5 +107,8 @@ module.exports = {
   scaleFrom,
   rotateAround,
   applyTransform,
-  invertTransform
+  invertTransform,
+  fixedPoint,
+  invertMatrix,
+  matVecMultiply
 }

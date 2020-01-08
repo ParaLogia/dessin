@@ -14,7 +14,6 @@ class Shape {
     this.scale = options.scale || defaults.scale;
     this.rotate = options.rotate || defaults.rotate;
     this.scaleCenter = options.scaleCenter || defaults.scaleCenter;
-    this.vanishingPt = options.vanishingPt || this.scaleCenter;
     this.colors = options.colors || defaults.colors;
   }
 
@@ -28,9 +27,16 @@ class Shape {
     ctx.closePath();
   }
 
-  transformStep() {
-    const { ctx, scale, rotate, scaleCenter } = this;
-    Utils.applyTransform(ctx, { scale, rotate, scaleCenter });
+  transform(proportion=1) {
+    const { ctx, scale, rotate, fixedPoint } = this;
+    const params = {
+      scale: Utils.interpolateVectorLogarithmic(defaults.scale, scale, proportion),
+      rotate: Utils.interpolateNumberLinear(defaults.rotate, rotate, proportion),
+      scaleCenter: fixedPoint,
+      rotateCenter: fixedPoint
+    };
+
+    Utils.applyTransform(ctx, params);
   }
 
   draw(depth, cycle) {
@@ -46,20 +52,19 @@ class Shape {
     ctx.fill();
 
     ctx.save();
-    this.transformStep();
+    this.transform();
     this.draw(depth - 1, cycle);
     ctx.restore();
   }
 
-  zoomOut(proportion) {
-    const { ctx, scale, rotate, vanishingPt } = this;
-    const params = Utils.invertTransform({ scale, rotate });
-    params.scale = Utils.interpolateVectorLogarithmic(defaults.scale, params.scale, proportion);
-    params.rotate = Utils.interpolateNumberLinear(defaults.rotate, params.rotate, proportion);
-    params.scaleCenter = vanishingPt;
-    params.rotateCenter = vanishingPt;
+  computeFixedPoint() {
+    const { ctx, scale, rotate, scaleCenter } = this;
 
-    Utils.applyTransform(ctx, params);
+    ctx.save();
+    Utils.applyTransform(ctx, { scale, rotate, scaleCenter });
+    const matrix = ctx.getTransform();
+    this.fixedPoint = Utils.fixedPoint(matrix);
+    ctx.restore();
   }
 }
 

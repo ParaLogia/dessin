@@ -5,6 +5,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
 
+  const { width, height } = canvas;
+
   ctx.strokeStyle = 'black';
   ctx.fillStyle = `rgb(100, 180, 250)`;
   ctx.lineWidth = 2;
@@ -16,7 +18,6 @@ window.addEventListener("DOMContentLoaded", () => {
     scale: [0.5, 0.5],
     scaleCenter: [-200, -200],
     rotate: -Math.PI/2,
-    vanishingPt: [-120, -40],
     ctx
   }
 
@@ -27,8 +28,8 @@ window.addEventListener("DOMContentLoaded", () => {
   //     [0, -400 * Math.sqrt(3) / 3]
   //   ],
   //   scale: [0.5, 0.5],
-  //   // scaleCenter: [0, 200 * Math.sqrt(3) / 3],
-  //   rotate: Math.PI,
+  //   scaleCenter: [0, -200 * Math.sqrt(3) / 3],
+  //   rotate: Math.PI/3,
   //   ctx
   // }
 
@@ -36,15 +37,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let step = 0;
   const cycleSteps = 100;
+  const startingDepth = 2;
+  const maxDepth = 5000;
+  const [ xScale, yScale ] = shape.scale;
+  let depth = startingDepth + 1 + Math.max(
+    Math.ceil(Math.log(width) / Math.log(1/xScale)),
+    Math.ceil(Math.log(height) / Math.log(1/yScale)),
+  )
+  depth = Math.min(depth, maxDepth);
 
   const doStep = () => {
     ctx.save();
     ctx.clearRect(-300, -300, 600, 600);
-    const proportion = 2 + (step % cycleSteps) / cycleSteps;
+    const proportion = startingDepth + (step % cycleSteps) / cycleSteps;
 
-    shape.zoomOut(proportion)
+    shape.transform(-proportion)
     
-    shape.draw(15, Math.floor(step/cycleSteps));
+    shape.draw(depth, Math.floor(step/cycleSteps));
     step++;
 
     ctx.restore();
@@ -53,6 +62,8 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   ctx.resetTransform();
+
+  shape.computeFixedPoint(5);
   ctx.translate(300, 300);
 
   shape.tracePath();
