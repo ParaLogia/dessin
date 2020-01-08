@@ -1,7 +1,7 @@
 const Shape = require('./shape');
 
 const CYCLE_LENGTH = 120;
-const DEPTH_OFFSET = 5;
+const DEPTH_OFFSET = 2;
 const MAX_DEPTH = 5000;
 
 class Showcase {
@@ -12,11 +12,11 @@ class Showcase {
     this.playing = false;
     this.frameCt = 0;
     this.shape = Shape.TRIANGLE(this.ctx, this.width, this.height);
-    this.ctx.translate(this.width / 2, this.height / 2);
-
+    
     this.animate = this.animate.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
-
+    
+    this.ctx.translate(this.width / 2, this.height / 2);
     this.computeDepth();
     this.attachListeners();
   }
@@ -65,9 +65,9 @@ class Showcase {
 
     ctx.save();
     ctx.clearRect(-width / 2, -height / 2, width, height);
-    const proportion = DEPTH_OFFSET + (frameCt % CYCLE_LENGTH) / CYCLE_LENGTH;
+    const zoomFactor = DEPTH_OFFSET + (frameCt % CYCLE_LENGTH) / CYCLE_LENGTH;
 
-    shape.transform(-proportion)
+    shape.transform(-zoomFactor)
 
     shape.draw(depth, Math.floor(frameCt / CYCLE_LENGTH));
     this.frameCt++;
