@@ -14,24 +14,30 @@ window.addEventListener("DOMContentLoaded", () => {
   let options;
 
   options = {
-    vertices: [[-200, -200], [200, -200], [200, 200], [-200, 200]],
-    scale: [0.5, 0.5],
-    scaleCenter: [-200, -200],
+    vertices: [[-1, -1], [1, -1], [1, 1], [-1, 1]],
+    scale: [0.75, 0.75],
+    scaleCenter: [-1, -1],
     rotate: -Math.PI/2,
     ctx
   }
+  options = {
+    vertices: [
+      [-1, 1 * Math.sqrt(3) / 3], 
+      [1, 1 * Math.sqrt(3) / 3], 
+      [0, -2 * Math.sqrt(3) / 3]
+    ],
+    scale: [0.5, 0.5],
+    scaleCenter: [0, 0],
+    rotate: Math.PI/3,
+    ctx
+  }
 
-  // options = {
-  //   vertices: [
-  //     [-200, 200 * Math.sqrt(3) / 3], 
-  //     [200, 200 * Math.sqrt(3) / 3], 
-  //     [0, -400 * Math.sqrt(3) / 3]
-  //   ],
-  //   scale: [0.5, 0.5],
-  //   scaleCenter: [0, -200 * Math.sqrt(3) / 3],
-  //   rotate: Math.PI/3,
-  //   ctx
-  // }
+  for (let i = 0; i < options.vertices.length; i++) {
+    options.vertices[i][0] *= width/2;
+    options.vertices[i][1] *= height/2;
+  }
+  options.scaleCenter[0] *= width/2;
+  options.scaleCenter[1] *= height/2;
 
   const shape = new Shape(options);
 
@@ -48,7 +54,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const doStep = () => {
     ctx.save();
-    ctx.clearRect(-300, -300, 600, 600);
+    ctx.clearRect(-width/2, -height/2, width, height);
     const proportion = startingDepth + (step % cycleSteps) / cycleSteps;
 
     shape.transform(-proportion)
@@ -61,13 +67,10 @@ window.addEventListener("DOMContentLoaded", () => {
     setTimeout(doStep, 20);
   }
 
-  ctx.resetTransform();
+  ctx.translate(width/2, height/2);
 
-  shape.computeFixedPoint(5);
-  ctx.translate(300, 300);
-
-  shape.tracePath();
-  ctx.clip();
+  // shape.tracePath();
+  // ctx.clip();
 
   doStep();
 });

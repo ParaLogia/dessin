@@ -12,9 +12,11 @@ class Shape {
     this.ctx = options.ctx;
     this.vertices = options.vertices;
     this.scale = options.scale || defaults.scale;
-    this.rotate = options.rotate || defaults.rotate;
     this.scaleCenter = options.scaleCenter || defaults.scaleCenter;
+    this.rotate = options.rotate || defaults.rotate;
     this.colors = options.colors || defaults.colors;
+
+    this.computeFixedPoint();
   }
 
   tracePath() {
@@ -59,6 +61,11 @@ class Shape {
 
   computeFixedPoint() {
     const { ctx, scale, rotate, scaleCenter } = this;
+
+    if (this.scale[0] === 1 || this.scale[1] === 1) {
+      this.fixedPoint = scaleCenter;
+      return;
+    }
 
     ctx.save();
     Utils.applyTransform(ctx, { scale, rotate, scaleCenter });
