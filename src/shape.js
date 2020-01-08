@@ -4,7 +4,7 @@ const defaults = {
   scale: [1, 1],
   rotate: 0,
   scaleCenter: [0, 0],
-  colors: ['#399E5A', '#5ABCB9', '#26532B', '#63E2C6', '#6EF9F5']
+  colors: ['#399E5A', '#5ABCB9', '#46734B', '#63E2C6', '#6EF9F5']
 }
 
 class Shape {
@@ -41,21 +41,17 @@ class Shape {
     Utils.applyTransform(ctx, params);
   }
 
-  draw(depth, cycle) {
-    if (depth <= 0) 
-      return;
-
+  draw(maxDepth, cycle) {
     const { ctx } = this;
-    this.tracePath(ctx);
-
-    const cycleLength = this.colors.length;
-    const cycleDepth = ((depth + cycleLength - cycle % cycleLength) % cycleLength);
-    ctx.fillStyle = this.colors[cycleDepth];
-    ctx.fill();
 
     ctx.save();
-    this.transform();
-    this.draw(depth - 1, cycle);
+    for (let depth = 0; depth < maxDepth; depth++) {
+      this.tracePath(ctx);
+      const colorOffset = (cycle + depth) % this.colors.length;
+      ctx.fillStyle = this.colors[colorOffset];
+      ctx.fill();
+      this.transform();
+    }
     ctx.restore();
   }
 
