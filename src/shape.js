@@ -78,15 +78,8 @@ class Shape {
       rotate: -Math.PI / 2,
       ctx
     }
-
-    for (let i = 0; i < options.vertices.length; i++) {
-      options.vertices[i][0] *= width / 2;
-      options.vertices[i][1] *= height / 2;
-    }
-
-    options.scaleCenter[0] *= width / 2;
-    options.scaleCenter[1] *= height / 2;
-
+    
+    Shape.scaleOptions(options, width, height);
     return new Shape(options);
   }
 
@@ -103,6 +96,11 @@ class Shape {
       ctx
     }
 
+    Shape.scaleOptions(options, width, height);
+    return new Shape(options);
+  }
+
+  static scaleOptions(options, width, height) {
     for (let i = 0; i < options.vertices.length; i++) {
       options.vertices[i][0] *= width / 2;
       options.vertices[i][1] *= height / 2;
@@ -110,8 +108,7 @@ class Shape {
 
     options.scaleCenter[0] *= width / 2;
     options.scaleCenter[1] *= height / 2;
-    
-    return new Shape(options);
+    return options;
   }
   
 }

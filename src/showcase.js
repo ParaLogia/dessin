@@ -16,9 +16,18 @@ class Showcase {
     this.animate = this.animate.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
     
-    this.ctx.translate(this.width / 2, this.height / 2);
+    this.setupCanvas();
     this.computeDepth();
     this.attachListeners();
+  }
+
+  setupCanvas() {
+    const { ctx, width, height } = this;
+    ctx.translate(width / 2, height / 2);
+    // ctx.beginPath();
+    // ctx.arc(0, 0, Math.min(width, height)/2, 0, 2*Math.PI);
+    // ctx.stroke();
+    // ctx.clip();
   }
 
   attachListeners() {
@@ -33,6 +42,9 @@ class Showcase {
       this.shape.computeFixedPoint();
       this.ctx.translate(this.width / 2, this.height / 2);
       this.computeDepth();
+      if (!this.playing) {
+        this.animate();
+      }
     })
   }
 
@@ -70,11 +82,11 @@ class Showcase {
     shape.transform(-zoomFactor)
 
     shape.draw(depth, Math.floor(frameCt / CYCLE_LENGTH));
-    this.frameCt++;
 
     ctx.restore();
 
     if (this.playing) {
+      this.frameCt++;
       requestAnimationFrame(this.animate);
     }
   }
