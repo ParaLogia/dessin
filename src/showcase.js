@@ -71,14 +71,15 @@ class Showcase {
         parseFloat(e.target.value)
       ));
       this.frameCt = Math.round(this.frameCt * (this.cycleLength / prevCycleLength));
+      this.postShapeUpdate();
     })
   }
 
   postShapeUpdate() {
     this.ctx.resetTransform();
     this.shape.computeFixedPoint();
-    this.shape.computeDepth();
     this.setupCanvas();
+    this.shape.computeDepth();
     if (!this.playing) {
       this.animate();
     }

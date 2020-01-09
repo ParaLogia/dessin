@@ -51,14 +51,14 @@ class Shape {
   }
 
   draw(cycle) {
-    const { ctx, colors, maxDepth } = this;
+    const { ctx, colors, maxDepth, depthOffset } = this;
 
     ctx.save();
-    this.transform(-this.depthOffset);
+    this.transform(-depthOffset);
 
     for (let depth = 0; depth < maxDepth; depth++) {
       this.tracePath(ctx);
-      let colorOffset = (cycle + depth - this.depthOffset) % colors.length;
+      let colorOffset = (cycle + depth - depthOffset) % colors.length;
       // Ensure positive index;
       colorOffset = (colorOffset + colors.length) % colors.length; 
       ctx.fillStyle = colors[colorOffset];
@@ -88,14 +88,14 @@ class Shape {
     const diagonalDist = Math.sqrt((width/2)**2 + (height/2)**2);
     const [xScale, yScale] = this.scale;
 
-    this.depthOffset = Math.ceil(Utils.logBase(
+    this.depthOffset = Math.ceil(-Utils.logBase(
       diagonalDist/this.inradius, 
-      Math.min(1/xScale, 1/yScale)
+      Math.max(xScale, yScale)
     ));
 
     this.maxDepth = this.depthOffset + 1 + Math.max(
-      Math.ceil(Utils.logBase(width, 1/xScale)),
-      Math.ceil(Utils.logBase(height, 1/yScale)),
+      Math.ceil(-Utils.logBase(width, xScale)),
+      Math.ceil(-Utils.logBase(height, yScale)),
     )
     this.maxDepth = Math.min(this.maxDepth, MAX_DEPTH_LIMIT);
   }
@@ -113,7 +113,7 @@ class Shape {
     }
 
     rotate = rotate || angleStep / 2;
-    const inradiusScale = Math.cos(rotate);
+    const inradiusScale = Math.abs(Math.cos(angleStep / 2));
     scale = scale || [inradiusScale, inradiusScale];
 
     const inradius = inradiusScale * radius;
