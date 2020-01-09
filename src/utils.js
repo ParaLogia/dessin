@@ -99,6 +99,10 @@ function matVecMultiply(mat, vec) {
   return res;
 }
 
+function logBase(num, base=Math.e) {
+  return Math.log(num) / Math.log(base);
+}
+
 module.exports = {
   interpolateNumberLinear, 
   interpolateNumberLogarithmic, 
@@ -110,5 +114,6 @@ module.exports = {
   invertTransform,
   fixedPoint,
   invertMatrix,
-  matVecMultiply
+  matVecMultiply,
+  logBase
 }

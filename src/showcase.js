@@ -1,8 +1,6 @@
 const Shape = require('./shape');
 
 const CYCLE_LENGTH = 120;
-const DEPTH_OFFSET = 2;
-const MAX_DEPTH = 5000;
 
 class Showcase {
   constructor(canvas) {
@@ -11,19 +9,23 @@ class Showcase {
     this.height = canvas.height;
     this.playing = false;
     this.frameCt = 0;
-    this.shape = Shape.TRIANGLE(this.ctx, this.width, this.height);
+    this.shape = Shape.polygon({
+      ctx: this.ctx, 
+      sides: 3, 
+      radius: this.width/2
+    });
     
     this.animate = this.animate.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
     
     this.setupCanvas();
-    this.computeDepth();
     this.attachListeners();
   }
 
   setupCanvas() {
     const { ctx, width, height } = this;
     ctx.translate(width / 2, height / 2);
+    ctx.scale(1, -1);
     // ctx.beginPath();
     // ctx.arc(0, 0, Math.min(width, height)/2, 0, 2*Math.PI);
     // ctx.stroke();
@@ -34,6 +36,7 @@ class Showcase {
     const playButton = document.getElementById('play-button');
     const scaleSlider = document.getElementById('scale-slider');
     const angleSlider = document.getElementById('angle-slider');
+    const sidesSlider = document.getElementById('sides-slider');
 
     playButton.addEventListener('click', this.togglePlay);
     scaleSlider.addEventListener('input', (e) => {
@@ -45,27 +48,26 @@ class Showcase {
       this.shape.rotate = parseFloat(e.target.value) * Math.PI;
       this.postShapeUpdate();
     })
+    sidesSlider.addEventListener('input', (e) => {
+      this.shape = Shape.polygon({
+        ctx: this.ctx,
+        sides: parseInt(e.target.value),
+        radius: this.width / 2,
+        rotate: this.shape.rotate,
+        scale: this.shape.scale
+      });
+      this.postShapeUpdate();
+    })
   }
 
   postShapeUpdate() {
     this.ctx.resetTransform();
     this.shape.computeFixedPoint();
     this.setupCanvas();
-    this.computeDepth();
+    this.shape.computeDepth();
     if (!this.playing) {
       this.animate();
     }
-  }
-
-  computeDepth() {
-    const { width, height } = this;
-
-    const [xScale, yScale] = this.shape.scale;
-    this.depth = DEPTH_OFFSET + 1 + Math.max(
-      Math.ceil(Math.log(width) / Math.log(1 / xScale)),
-      Math.ceil(Math.log(height) / Math.log(1 / yScale)),
-    )
-    this.depth = Math.min(this.depth, MAX_DEPTH);
   }
 
   play() {
@@ -74,6 +76,7 @@ class Showcase {
   }
 
   togglePlay(e) {
+    e.preventDefault();
     if (this.playing) {
       this.playing = false;
     } else {
@@ -82,15 +85,15 @@ class Showcase {
   }
 
   animate() {
-    const { ctx, shape, width, height, depth, frameCt } = this;
+    const { ctx, shape, width, height, frameCt } = this;
 
     ctx.save();
     ctx.clearRect(-width / 2, -height / 2, width, height);
-    const zoomFactor = DEPTH_OFFSET + (frameCt % CYCLE_LENGTH) / CYCLE_LENGTH;
+    const zoomFactor = (frameCt % CYCLE_LENGTH) / CYCLE_LENGTH;
 
     shape.transform(-zoomFactor)
 
-    shape.draw(depth, Math.floor(frameCt / CYCLE_LENGTH));
+    shape.draw(Math.floor(frameCt / CYCLE_LENGTH));
 
     ctx.restore();
 
