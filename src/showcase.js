@@ -13,7 +13,7 @@ class Showcase {
     this.frameCt = 0;
     this.shape = Shape.polygon({
       ctx: this.ctx, 
-      sides: 3, 
+      sides: 4, 
       radius: Math.min(this.width, this.height)/2
     }); 
     this.cycleLength = 240;
