@@ -1,6 +1,8 @@
 const Shape = require('./shape');
+const Utils = require('./utils');
 
-const CYCLE_LENGTH = 120;
+const MIN_CYCLE_LENGTH = 30;
+const MAX_CYCLE_LENGTH = 480;
 
 class Showcase {
   constructor(canvas) {
@@ -13,7 +15,9 @@ class Showcase {
       ctx: this.ctx, 
       sides: 3, 
       radius: this.width/2
-    });
+    }); 
+    this.cycleLength = 240;
+    this.cycles = 0;
     
     this.animate = this.animate.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
@@ -37,6 +41,7 @@ class Showcase {
     const scaleSlider = document.getElementById('scale-slider');
     const angleSlider = document.getElementById('angle-slider');
     const sidesSlider = document.getElementById('sides-slider');
+    const speedSlider = document.getElementById('speed-slider');
 
     playButton.addEventListener('click', this.togglePlay);
     scaleSlider.addEventListener('input', (e) => {
@@ -58,13 +63,22 @@ class Showcase {
       });
       this.postShapeUpdate();
     })
+    speedSlider.addEventListener('input', (e) => {
+      const prevCycleLength = this.cycleLength;
+      this.cycleLength = Math.round(Utils.interpolateNumberLogarithmic(
+        MAX_CYCLE_LENGTH, 
+        MIN_CYCLE_LENGTH, 
+        parseFloat(e.target.value)
+      ));
+      this.frameCt = Math.round(this.frameCt * (this.cycleLength / prevCycleLength));
+    })
   }
 
   postShapeUpdate() {
     this.ctx.resetTransform();
     this.shape.computeFixedPoint();
-    this.setupCanvas();
     this.shape.computeDepth();
+    this.setupCanvas();
     if (!this.playing) {
       this.animate();
     }
@@ -89,16 +103,23 @@ class Showcase {
 
     ctx.save();
     ctx.clearRect(-width / 2, -height / 2, width, height);
-    const zoomFactor = (frameCt % CYCLE_LENGTH) / CYCLE_LENGTH;
+    const zoomFactor = (frameCt % this.cycleLength) / this.cycleLength;
 
     shape.transform(-zoomFactor)
 
-    shape.draw(Math.floor(frameCt / CYCLE_LENGTH));
+    if (this.playing) {
+      this.frameCt++;
+      if (frameCt >= this.cycleLength) {
+        this.frameCt = 0;
+        this.cycles++;
+      }
+    }
+    
+    shape.draw(this.cycles);
 
     ctx.restore();
 
     if (this.playing) {
-      this.frameCt++;
       requestAnimationFrame(this.animate);
     }
   }
