@@ -33,19 +33,28 @@ class Showcase {
   attachListeners() {
     const playButton = document.getElementById('play-button');
     const scaleSlider = document.getElementById('scale-slider');
+    const angleSlider = document.getElementById('angle-slider');
 
     playButton.addEventListener('click', this.togglePlay);
     scaleSlider.addEventListener('input', (e) => {
       const scale = parseFloat(e.target.value);
-      this.shape.scale = [scale, scale];
-      this.ctx.resetTransform();
-      this.shape.computeFixedPoint();
-      this.ctx.translate(this.width / 2, this.height / 2);
-      this.computeDepth();
-      if (!this.playing) {
-        this.animate();
-      }
+      this.shape.scale = [scale, scale]; 
+      this.postShapeUpdate();
     })
+    angleSlider.addEventListener('input', (e) => {
+      this.shape.rotate = parseFloat(e.target.value) * Math.PI;
+      this.postShapeUpdate();
+    })
+  }
+
+  postShapeUpdate() {
+    this.ctx.resetTransform();
+    this.shape.computeFixedPoint();
+    this.setupCanvas();
+    this.computeDepth();
+    if (!this.playing) {
+      this.animate();
+    }
   }
 
   computeDepth() {
