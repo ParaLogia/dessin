@@ -14,7 +14,7 @@ class Showcase {
     this.shape = Shape.polygon({
       ctx: this.ctx, 
       sides: 3, 
-      radius: this.width/2
+      radius: Math.min(this.width, this.height)/2
     }); 
     this.cycleLength = 240;
     this.cycles = 0;
@@ -30,10 +30,6 @@ class Showcase {
     const { ctx, width, height } = this;
     ctx.translate(width / 2, height / 2);
     ctx.scale(1, -1);
-    // ctx.beginPath();
-    // ctx.arc(0, 0, Math.min(width, height)/2, 0, 2*Math.PI);
-    // ctx.stroke();
-    // ctx.clip();
   }
 
   attachListeners() {
