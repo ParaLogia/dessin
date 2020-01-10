@@ -69,6 +69,13 @@ class Showcase {
       this.frameCt = Math.round(this.frameCt * (this.cycleLength / prevCycleLength));
       this.postShapeUpdate();
     })
+
+    window.onresize = () => {
+      this.width = this.ctx.canvas.width = window.innerWidth;
+      this.height = this.ctx.canvas.height = window.innerHeight;
+      this.setupCanvas();
+      this.shape.computeDepth();
+    }
   }
 
   postShapeUpdate() {
@@ -112,7 +119,7 @@ class Showcase {
       }
     }
     
-    shape.draw(this.cycles);
+    shape.draw(this.cycles, zoomFactor);
 
     ctx.restore();
 

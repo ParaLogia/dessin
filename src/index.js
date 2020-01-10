@@ -8,10 +8,5 @@ window.addEventListener("DOMContentLoaded", () => {
   canvas.height = window.innerHeight;
   const showcase = new Showcase(canvas);
 
-  window.onresize = () => {
-    showcase.width = canvas.width = window.innerWidth;
-    showcase.height = canvas.height = window.innerHeight;
-    showcase.setupCanvas();
-  }
   showcase.play();
 });
