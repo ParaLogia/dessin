@@ -4,8 +4,6 @@ const defaults = {
   scale: [1, 1],
   rotate: 0,
   scaleCenter: [0, 0],
-  depthOffset: 0,
-  inradius: 1,
   colors: [
     [57, 158, 90], 
     [90, 188, 185], 
@@ -27,8 +25,6 @@ class Shape {
     this.scaleCenter = options.scaleCenter;
     this.rotate = options.rotate;
     this.colors = options.colors;
-    this.depthOffset = options.depthOffset;
-    this.inradius = options.inradius;
 
     this.computeFixedPoint();
     this.computeDepth();
@@ -67,11 +63,13 @@ class Shape {
       let colorOffset = (cycle + depth - depthOffset) % colors.length;
       // Ensure positive index;
       colorOffset = (colorOffset + colors.length) % colors.length; 
+
       const [r, g, b] = colors[colorOffset];
       const trueDepth = Utils.interpolateNumberLinear(depth+1, depth, zoomFactor);
       let alpha = Utils.interpolateNumberLinear(1, 0, (trueDepth/maxDepth)**(7/3));
       ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
       ctx.fill();
+      
       this.transform();
     }
     ctx.restore();
@@ -98,7 +96,7 @@ class Shape {
     const [xScale, yScale] = this.scale;
 
     this.depthOffset = Math.ceil(Utils.logBase(
-      diagonalDist/this.inradius, 
+      3*diagonalDist, 
       Math.min(1/xScale, 1/yScale)
     ));
 
@@ -127,14 +125,11 @@ class Shape {
     const inradiusScale = Math.abs(Math.cos(angleStep / 2));
     scale = scale || [inradiusScale, inradiusScale];
 
-    const inradius = inradiusScale * radius;
-
     const options = {
       ctx,
       vertices,
       rotate,
-      scale,
-      inradius
+      scale
     }
 
     return new Shape(options);

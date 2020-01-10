@@ -49,7 +49,6 @@ class Showcase {
       this.width = this.ctx.canvas.width = window.innerWidth;
       this.height = this.ctx.canvas.height = window.innerHeight;
       this.setupCanvas();
-      this.shape.computeDepth();
     }
 
     window.addEventListener('keydown', (e) => {
@@ -102,7 +101,7 @@ class Showcase {
     const { ctx, shape, width, height, frameCt } = this;
 
     ctx.save();
-    ctx.clearRect(-width / 2, -height / 2, width, height);
+    // ctx.clearRect(-width / 2, -height / 2, width, height);
     const zoomFactor = (frameCt % this.cycleLength) / this.cycleLength;
 
     shape.transform(-zoomFactor);
