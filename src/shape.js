@@ -112,7 +112,9 @@ class Shape {
       vertices.push([x, y]);
     }
 
-    rotate = rotate || angleStep / 2;
+    if (rotate === undefined) {
+      rotate = rotate || angleStep / 2;
+    }
     const inradiusScale = Math.abs(Math.cos(angleStep / 2));
     scale = scale || [inradiusScale, inradiusScale];
 

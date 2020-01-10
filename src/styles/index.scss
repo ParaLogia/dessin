@@ -1,9 +1,45 @@
 body {
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  height: 100vh;
+}
+
+#canvas {
+  display: block;
+  position: absolute;
+}
+
+.sliders-container {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+
+  &.top {
+    top: 10px;
+  }
+
+  &.bottom {
+    bottom: 10px;
+  }
+
+  label {
+    display: none;
+  }
 }
 
 .slider {
-  width: 600px;
+  width: 80vw;
+  z-index: 2;
+  opacity: 40%;
+  transition: opacity .3s;
+
+  &:hover {
+    opacity: 100%;
+  }
 }

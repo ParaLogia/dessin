@@ -1,10 +1,17 @@
+import "./styles/range.scss";
 import "./styles/index.scss";
 import Showcase from './showcase';
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById('canvas');
-  canvas.width = window.innerWidth * 0.9;
-  canvas.height = window.innerHeight * 0.9;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   const showcase = new Showcase(canvas);
+
+  window.onresize = () => {
+    showcase.width = canvas.width = window.innerWidth;
+    showcase.height = canvas.height = window.innerHeight;
+    showcase.setupCanvas();
+  }
   showcase.play();
 });

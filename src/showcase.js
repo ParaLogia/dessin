@@ -33,13 +33,13 @@ class Showcase {
   }
 
   attachListeners() {
-    const playButton = document.getElementById('play-button');
+    const canvas = document.getElementById('canvas');
     const scaleSlider = document.getElementById('scale-slider');
     const angleSlider = document.getElementById('angle-slider');
     const sidesSlider = document.getElementById('sides-slider');
     const speedSlider = document.getElementById('speed-slider');
 
-    playButton.addEventListener('click', this.togglePlay);
+    canvas.addEventListener('click', this.togglePlay);
     scaleSlider.addEventListener('input', (e) => {
       const scale = parseFloat(e.target.value);
       this.shape.scale = [scale, scale]; 
@@ -52,8 +52,8 @@ class Showcase {
     sidesSlider.addEventListener('input', (e) => {
       this.shape = Shape.polygon({
         ctx: this.ctx,
-        sides: parseInt(e.target.value),
-        radius: this.width / 2,
+        sides: parseFloat(e.target.value),
+        radius: Math.min(this.width, this.height) / 2,
         rotate: this.shape.rotate,
         scale: this.shape.scale
       });
