@@ -48,6 +48,13 @@ class Showcase {
     window.onresize = () => {
       this.width = this.ctx.canvas.width = window.innerWidth;
       this.height = this.ctx.canvas.height = window.innerHeight;
+      this.shape = Shape.polygon({
+        ctx: this.ctx,
+        sides: this.sidesSlider.value,
+        radius: Math.min(this.width, this.height) / 2,
+        scale: this.shape.scale,
+        rotate: this.shape.rotate
+      }); 
       this.setupCanvas();
     }
 
