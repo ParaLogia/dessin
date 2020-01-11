@@ -58,15 +58,16 @@ class Shape {
     ctx.save();
     this.transform(-depthOffset);
 
-    for (let depth = 0; depth < maxDepth; depth++) {
+    for (let depth = -depthOffset; depth < maxDepth; depth++) {
       this.tracePath(ctx);
-      let colorOffset = (cycle + depth - depthOffset) % colors.length;
+      let colorOffset = (cycle + depth) % colors.length;
       // Ensure positive index;
       colorOffset = (colorOffset + colors.length) % colors.length; 
 
       const [r, g, b] = colors[colorOffset];
-      const trueDepth = Utils.interpolateNumberLinear(depth+1, depth, zoomFactor);
-      let alpha = Utils.interpolateNumberLinear(1, 0, (trueDepth/maxDepth)**(7/3));
+      const fadingDepth = Math.max(Math.ceil(maxDepth/2), Math.min(maxDepth, 5));
+      const fadeLevel = Utils.interpolateNumberLinear(depth+1, depth, zoomFactor) - fadingDepth;
+      let alpha = Utils.interpolateNumberLinear(1, 0, (fadeLevel/(1+maxDepth-fadingDepth)));
       ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
       ctx.fill();
       
@@ -100,7 +101,7 @@ class Shape {
       Math.min(1/xScale, 1/yScale)
     ));
 
-    this.maxDepth = this.depthOffset + 1 + Math.max(
+    this.maxDepth = 1 + Math.max(
       Math.ceil(-Utils.logBase(width, xScale)),
       Math.ceil(-Utils.logBase(height, yScale)),
     )
@@ -120,7 +121,7 @@ class Shape {
     }
 
     if (rotate === undefined) {
-      rotate = rotate || angleStep / 2;
+      rotate = angleStep / 2;
     }
     const inradiusScale = Math.abs(Math.cos(angleStep / 2));
     scale = scale || [inradiusScale, inradiusScale];
