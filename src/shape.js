@@ -107,7 +107,7 @@ class Shape {
     this.maxDepth = Math.min(this.maxDepth, MAX_DEPTH_LIMIT);
   }
 
-  static polygon({ ctx, sides, radius, rotate, scale }) {
+  static polygon({ ctx, sides, radius, rotate, scale, scaleCenter }) {
     const vertices = [];
     const angleStep = 2 * Math.PI / sides;
 
@@ -124,12 +124,14 @@ class Shape {
     }
     const inradiusScale = Math.abs(Math.cos(angleStep / 2));
     scale = scale || [inradiusScale, inradiusScale];
+    scaleCenter = scaleCenter || defaults.scaleCenter;
 
     const options = {
       ctx,
       vertices,
       rotate,
-      scale
+      scale,
+      scaleCenter
     }
 
     return new Shape(options);

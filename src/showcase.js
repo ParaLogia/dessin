@@ -38,12 +38,14 @@ class Showcase {
     this.angleSlider = document.getElementById('angle-slider');
     this.sidesSlider = document.getElementById('sides-slider');
     this.speedSlider = document.getElementById('speed-slider');
+    this.offsetSlider = document.getElementById('offset-slider');
 
     canvas.addEventListener('click', this.togglePlay);
     this.scaleSlider.addEventListener('input', (e) => this.setScale(e.target.value));
     this.angleSlider.addEventListener('input', (e) => this.setAngle(e.target.value));
     this.sidesSlider.addEventListener('input', (e) => this.setSides(e.target.value));
     this.speedSlider.addEventListener('input', (e) => this.setSpeed(e.target.value));
+    this.offsetSlider.addEventListener('input', (e) => this.setOffset(e.target.value));
 
     window.onresize = () => {
       this.width = this.ctx.canvas.width = window.innerWidth;
@@ -108,7 +110,7 @@ class Showcase {
     const { ctx, shape, width, height, frameCt } = this;
 
     ctx.save();
-    // ctx.clearRect(-width / 2, -height / 2, width, height);
+    ctx.clearRect(-width / 2, -height / 2, width, height);
     const zoomFactor = (frameCt % this.cycleLength) / this.cycleLength;
 
     shape.transform(-zoomFactor);
@@ -152,7 +154,8 @@ class Showcase {
       sides: sides,
       radius: Math.min(this.width, this.height) / 2,
       rotate: this.shape.rotate,
-      scale: this.shape.scale
+      scale: this.shape.scale,
+      scaleCenter: this.shape.scaleCenter
     });
     this.postShapeUpdate();
   }
@@ -167,6 +170,14 @@ class Showcase {
       speed
     ));
     this.frameCt = Math.round(this.frameCt * (this.cycleLength / prevCycleLength));
+    this.postShapeUpdate();
+  }
+
+  setOffset(offset) {
+    this.offsetSlider.value = offset;
+    offset = this.offsetSlider.value;
+    const radius = Math.min(this.width, this.height)/2;
+    this.shape.scaleCenter = [0, Utils.interpolateNumberLinear(0, radius, offset)];
     this.postShapeUpdate();
   }
 }
