@@ -57,7 +57,7 @@ class Showcase {
         scale: this.shape.scale,
         rotate: this.shape.rotate
       }); 
-      this.setupCanvas();
+      this.postShapeUpdate();
     }
 
     window.addEventListener('keydown', (e) => {
