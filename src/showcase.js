@@ -36,6 +36,7 @@ class Showcase {
     const canvas = document.getElementById('canvas');
     this.scaleSlider = document.getElementById('scale-slider');
     this.angleSlider = document.getElementById('angle-slider');
+    this.hueSlider = document.getElementById('hue-slider');
     this.sidesSlider = document.getElementById('sides-slider');
     this.speedSlider = document.getElementById('speed-slider');
     this.offsetSlider = document.getElementById('offset-slider');
@@ -43,6 +44,7 @@ class Showcase {
     canvas.addEventListener('click', this.togglePlay);
     this.scaleSlider.addEventListener('input', (e) => this.setScale(e.target.value));
     this.angleSlider.addEventListener('input', (e) => this.setAngle(e.target.value));
+    this.hueSlider.addEventListener('input', (e) => this.setHue(e.target.value));
     this.sidesSlider.addEventListener('input', (e) => this.setSides(e.target.value));
     this.speedSlider.addEventListener('input', (e) => this.setSpeed(e.target.value));
     this.offsetSlider.addEventListener('input', (e) => this.setOffset(e.target.value));
@@ -145,6 +147,12 @@ class Showcase {
     angle = this.angleSlider.value;
     this.shape.rotate = parseFloat(angle) * Math.PI;
     this.postShapeUpdate();
+  }
+
+  setHue(hue) {
+    this.hueSlider.value = hue;
+    hue = this.hueSlider.value;
+    this.shape.hue = parseInt(hue);
   }
 
   setSides(sides) {

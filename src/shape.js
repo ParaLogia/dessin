@@ -1,19 +1,26 @@
 const Utils = require('./utils');
 
+const MAX_DEPTH_LIMIT = 5000;
+
 const defaults = {
   scale: [1, 1],
   rotate: 0,
   scaleCenter: [0, 0],
+  hue: 127,
   colors: [
-    [57, 158, 90], 
-    [90, 188, 185], 
-    [70, 115, 75], 
-    [99, 226, 198], 
-    [110, 249, 245]
-  ]
+    [13, '47%', '42%'],
+    [51, '42%', '55%'],
+    [0, '24%', '36%'],
+    [40, '69%', '64%'],
+    [51, '92%', '70%'],
+  ],
+  // colors: [
+  //   [45, '100%', '68%'],
+  //   [90, '100%', '85%'],
+  //   [135, '68%', '60%'],
+  //   [0, '46%', '32%'],
+  // ]
 }
-
-const MAX_DEPTH_LIMIT = 5000;
 
 class Shape {
   constructor(options) {
@@ -25,6 +32,7 @@ class Shape {
     this.scaleCenter = options.scaleCenter;
     this.rotate = options.rotate;
     this.colors = options.colors;
+    this.hue = options.hue;
 
     this.computeFixedPoint();
     this.computeDepth();
@@ -53,7 +61,7 @@ class Shape {
   }
 
   draw(cycle, zoomFactor) {
-    const { ctx, colors, maxDepth, depthOffset } = this;
+    const { ctx, hue, colors, maxDepth, depthOffset } = this;
 
     ctx.save();
     this.transform(-depthOffset);
@@ -64,11 +72,11 @@ class Shape {
       // Ensure positive index;
       colorOffset = (colorOffset + colors.length) % colors.length; 
 
-      const [r, g, b] = colors[colorOffset];
+      const [hOffset, s, l] = colors[colorOffset];
       const fadingDepth = Math.max(Math.ceil(maxDepth/2), Math.min(maxDepth, 5));
       const fadeLevel = Utils.interpolateNumberLinear(depth+1, depth, zoomFactor) - fadingDepth;
       let alpha = Utils.interpolateNumberLinear(1, 0, (fadeLevel/(1+maxDepth-fadingDepth)));
-      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      ctx.fillStyle = `hsla(${(hue+hOffset)%360},${s},${l},${alpha})`;
       ctx.fill();
       
       this.transform();
