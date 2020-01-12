@@ -55,7 +55,8 @@ class Showcase {
         sides: this.sidesSlider.value,
         radius: Math.min(this.width, this.height) / 2,
         scale: this.shape.scale,
-        rotate: this.shape.rotate
+        rotate: this.shape.rotate,
+        scaleCenter: this.shape.scaleCenter
       }); 
       this.postShapeUpdate();
     }
