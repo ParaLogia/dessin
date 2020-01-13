@@ -164,7 +164,8 @@ class Showcase {
       radius: Math.min(this.width, this.height) / 2,
       rotate: this.shape.rotate,
       scale: this.shape.scale,
-      scaleCenter: this.shape.scaleCenter
+      scaleCenter: this.shape.scaleCenter,
+      hue: this.shape.hue
     });
     this.postShapeUpdate();
   }
