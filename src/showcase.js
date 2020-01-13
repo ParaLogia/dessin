@@ -4,6 +4,8 @@ const Utils = require('./utils');
 const MIN_CYCLE_LENGTH = 30;
 const MAX_CYCLE_LENGTH = 480;
 
+const FEATURE_HUE = false;
+
 class Showcase {
   constructor(canvas) {
     this.ctx = canvas.getContext('2d');
@@ -44,10 +46,14 @@ class Showcase {
     canvas.addEventListener('click', this.togglePlay);
     this.scaleSlider.addEventListener('input', (e) => this.setScale(e.target.value));
     this.angleSlider.addEventListener('input', (e) => this.setAngle(e.target.value));
-    this.hueSlider.addEventListener('input', (e) => this.setHue(e.target.value));
     this.sidesSlider.addEventListener('input', (e) => this.setSides(e.target.value));
     this.speedSlider.addEventListener('input', (e) => this.setSpeed(e.target.value));
     this.offsetSlider.addEventListener('input', (e) => this.setOffset(e.target.value));
+    if (FEATURE_HUE) {
+      this.hueSlider.addEventListener('input', (e) => this.setHue(e.target.value));
+    } else {
+      this.hueSlider.parentElement.removeChild(this.hueSlider);
+    }
 
     window.onresize = () => {
       this.width = this.ctx.canvas.width = window.innerWidth;
