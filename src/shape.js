@@ -109,7 +109,7 @@ class Shape {
       Math.min(1/xScale, 1/yScale)
     ));
 
-    this.maxDepth = 1 + Math.max(
+    this.maxDepth = Math.max(
       Math.ceil(-Utils.logBase(width, xScale)),
       Math.ceil(-Utils.logBase(height, yScale)),
     )
