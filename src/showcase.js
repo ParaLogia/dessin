@@ -1,5 +1,6 @@
 const Shape = require('./shape');
 const Utils = require('./utils');
+const { openModal } = require('./modal');
 
 const MIN_CYCLE_LENGTH = 30;
 const MAX_CYCLE_LENGTH = 480;
@@ -26,6 +27,7 @@ class Showcase {
     
     this.setupCanvas();
     this.attachListeners();
+    openModal();
   }
 
   setupCanvas() {
