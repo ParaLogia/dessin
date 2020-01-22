@@ -1,5 +1,6 @@
 import "./styles/range.scss";
-import "./styles/index.scss";
+import "./styles/index.scss"; 
+import "./styles/modal.scss"
 import Showcase from './showcase';
 
 window.addEventListener("DOMContentLoaded", () => {

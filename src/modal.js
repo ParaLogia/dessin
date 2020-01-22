@@ -6,6 +6,7 @@ const closeModal = () => {
   modalBG.classList.add('hiding');
   modal.classList.add('hiding');
   modalBG.removeEventListener('click', closeModal);
+  startButtonBG.removeEventListener('click', closeModal);
   modal.removeEventListener('click', handleModalClick);
 
   setTimeout(() => {
@@ -19,9 +20,11 @@ const closeModal = () => {
 const openModal = () => {
   const modal = document.getElementById('modal');
   const modalBG = modal.parentElement;
+  const startButton = document.getElementById('start-button');
   modalBG.classList.remove('hidden');
   modal.classList.remove('hidden');
   modalBG.addEventListener('click', closeModal);
+  startButton.addEventListener('click', closeModal);
   modal.addEventListener('click', handleModalClick);
 }
 
