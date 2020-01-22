@@ -3,10 +3,11 @@ const handleModalClick = e => { e.stopPropagation() }
 const closeModal = () => {
   const modal = document.getElementById('modal');
   const modalBG = modal.parentElement;
+  const startButton = document.getElementById('start-button');
   modalBG.classList.add('hiding');
   modal.classList.add('hiding');
   modalBG.removeEventListener('click', closeModal);
-  startButtonBG.removeEventListener('click', closeModal);
+  startButton.removeEventListener('click', closeModal);
   modal.removeEventListener('click', handleModalClick);
 
   setTimeout(() => {
