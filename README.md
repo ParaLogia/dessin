@@ -2,11 +2,12 @@
 
 Dessin is an interactive pattern generator using recursive geometry.
 
-[Live demo](https://paralogia.github.io/dessin/)
-
 Play around with the sliders and watch the shapes transform in real time!
 
 ![example2](assets/images/dessin_big_2.png)
+
+## Live Demo
+[https://paralogia.github.io/dessin/](https://paralogia.github.io/dessin/)
 
 ## Controls:
 * Left click: Play/Pause
