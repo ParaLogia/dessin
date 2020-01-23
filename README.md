@@ -1,33 +1,29 @@
 # Dessin
 
-## Background and Overview 
+Dessin is an interactive pattern generator using recursive geometry.
 
-Dessin is a showcase of visual proofs for infinite series (sums of infinitely many numbers, like 1/2 + 1/4 + 1/8 + ...). These proofs rely on recursive arguments, which can be represented with nested shapes, like so: ![Example figures](https://whymystudentsdidnt.files.wordpress.com/2013/08/2vproofs_sum1_4thtontheq1_3rd2.png)
+Play around with the sliders and watch the shapes transform in real time!
 
-To make things more visually interesting/interactive, the display will support infinitely zooming into the self-similar shape to emphasize the recursive nature.
+![example2](assets/images/dessin_big_2.png)
 
-## Functionality and MVPs 
-Users will be able to 
-* Navigate between different showcases 
-* Pause/Play automatic zooming of the current showcase
-* Manually zoom in/out with scrolling
-* Adjust parameters of parameterized equations (bonus)
+## Controls:
+* Left click: Play/Pause
+* Right click: Context Menu (you can save/copy the image)
+* Slider parameters (left-to-right/top-down):
+  * Scaling Factor
+  * Rotation Angle
+  * Polygon Sides
+  * Displacement
+  * Animation Speed
 
-## Wireframes 
-https://wireframe.cc/8bMzjv
+## Technologies
+Dessin is implemented using JavaScript and rendered on an HTML5 canvas. Future iterations may incorporate SVGs for scalable images.
 
-## Architecture and Technology 
-The app will use the following technologies:
-* HTML canvas to display the main showcase
-* anime.js to simplify rendering and animation effects.
+## Example Patterns
 
-Possible scripts:
-* `showcase.js` - handles the canvas view and UI control responses
-* `proof.js` - class for a particular visual proof, as described by a shape with divisions into multiple regions, including the "recursive" region
+Discover your own fascinating patterns!
 
-## Implementation Timeline 
-Part 1: Setup Node modules, and get webpack running with the entry file. Display a basic shape in canvas. Research proofs to showcase.
-
-Part 2: Figure out encoding to store proofs. Get a single proof rendered with automatic scrolling.
-
-Part 3: Implement user controls for zooming, as well as navigation between proofs. If time is available, refactor proofs for parameterized proofs, and add controls for it.
+![example4](assets/images/dessin_big_4.png)
+![example1](assets/images/dessin_big_1.png)
+![example3](assets/images/dessin_big_3.png)
+![example5](assets/images/dessin_big_5.png)
