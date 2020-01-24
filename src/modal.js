@@ -1,5 +1,7 @@
 const handleModalClick = e => { e.stopPropagation() }
 
+let closingCallback = null;
+
 const closeModal = () => {
   const modal = document.getElementById('modal');
   const modalBG = modal.parentElement;
@@ -16,9 +18,13 @@ const closeModal = () => {
     modal.classList.add('hidden');
     modalBG.classList.add('hidden');
   }, 400)
+
+  if (closingCallback) {
+    closingCallback();
+  }
 }
 
-const openModal = () => {
+const openModal = (cb) => {
   const modal = document.getElementById('modal');
   const modalBG = modal.parentElement;
   const startButton = document.getElementById('start-button');
@@ -27,6 +33,7 @@ const openModal = () => {
   modalBG.addEventListener('click', closeModal);
   startButton.addEventListener('click', closeModal);
   modal.addEventListener('click', handleModalClick);
+  closingCallback = cb;
 }
 
 module.exports = {

@@ -27,7 +27,9 @@ class Showcase {
     
     this.setupCanvas();
     this.attachListeners();
-    openModal();
+
+    this.animate();
+    openModal(this.togglePlay);
   }
 
   setupCanvas() {
@@ -108,8 +110,7 @@ class Showcase {
     requestAnimationFrame(this.animate);
   }
 
-  togglePlay(e) {
-    e.preventDefault();
+  togglePlay() {
     if (this.playing) {
       this.playing = false;
     } else {
