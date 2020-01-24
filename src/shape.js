@@ -48,8 +48,9 @@ class Shape {
     ctx.closePath();
   }
 
-  transform(proportion=1) {
-    const { ctx, scale, rotate, fixedPoint } = this;
+  transform(proportion=1, ctx) {
+    ctx = ctx || this.ctx;
+    const { scale, rotate, fixedPoint } = this;
     const params = {
       scale: Utils.interpolateVectorLogarithmic(defaults.scale, scale, proportion),
       rotate: Utils.interpolateNumberLinear(defaults.rotate, rotate, proportion),
@@ -105,7 +106,7 @@ class Shape {
     const [xScale, yScale] = this.scale;
 
     this.depthOffset = Math.ceil(Utils.logBase(
-      3*diagonalDist, 
+      2*diagonalDist, 
       Math.min(1/xScale, 1/yScale)
     ));
 

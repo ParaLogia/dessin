@@ -28,7 +28,7 @@ class Showcase {
     this.setupCanvas();
     this.attachListeners();
 
-    this.animate();
+    requestAnimationFrame(this.animate);
     openModal(this.togglePlay);
   }
 
@@ -101,7 +101,7 @@ class Showcase {
     this.setupCanvas();
     this.shape.computeDepth();
     if (!this.playing) {
-      this.animate();
+      requestAnimationFrame(this.animate);
     }
   }
 
@@ -162,6 +162,9 @@ class Showcase {
     this.hueSlider.value = hue;
     hue = this.hueSlider.value;
     this.shape.hue = parseInt(hue);
+    if (!this.playing) {
+      requestAnimationFrame(this.animate);
+    }
   }
 
   setSides(sides) {
