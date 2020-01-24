@@ -30,3 +30,6 @@ Discover your own fascinating patterns!
 ![example1](assets/images/dessin_big_1.png)
 ![example3](assets/images/dessin_big_3.png)
 ![example5](assets/images/dessin_big_5.png)
+
+## Credits
+* [*Styling Cross-Browser Compatible Range Inputs with Sass*](https://github.com/darlanrod/input-range-sass). Darlan Rod.
