@@ -1,15 +1,14 @@
 const Shape = require('./shape');
 const Utils = require('./utils');
+const Features = require('./features');
 const { openModal } = require('./modal');
 
 const MIN_CYCLE_LENGTH = 30;
 const MAX_CYCLE_LENGTH = 480;
 
-const FEATURE_HUE = false;
-
 class Showcase {
   constructor(canvas) {
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext('2d', { alpha: Features.ALPHA });
     this.width = canvas.width;
     this.height = canvas.height;
     this.playing = false;
@@ -53,7 +52,7 @@ class Showcase {
     this.sidesSlider.addEventListener('input', (e) => this.setSides(e.target.value));
     this.speedSlider.addEventListener('input', (e) => this.setSpeed(e.target.value));
     this.offsetSlider.addEventListener('input', (e) => this.setOffset(e.target.value));
-    if (FEATURE_HUE) {
+    if (Features.HUE_SLIDER) {
       this.hueSlider.addEventListener('input', (e) => this.setHue(e.target.value));
     } else {
       this.hueSlider.parentElement.removeChild(this.hueSlider);

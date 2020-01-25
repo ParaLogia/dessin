@@ -1,4 +1,5 @@
 const Utils = require('./utils');
+const Features = require('./features');
 
 const MAX_DEPTH_LIMIT = 5000;
 
@@ -54,10 +55,9 @@ class Shape {
     const params = {
       scale: Utils.interpolateVectorLogarithmic(defaults.scale, scale, proportion),
       rotate: Utils.interpolateNumberLinear(defaults.rotate, rotate, proportion),
-      scaleCenter: fixedPoint,
-      rotateCenter: fixedPoint
+      center: fixedPoint,
     };
-
+    
     Utils.applyTransform(ctx, params);
   }
 
@@ -74,9 +74,17 @@ class Shape {
       colorOffset = (colorOffset + colors.length) % colors.length; 
 
       const [hOffset, s, l] = colors[colorOffset];
-      const fadingDepth = Math.max(Math.ceil(maxDepth/2), Math.min(maxDepth, 5));
-      const fadeLevel = Utils.interpolateNumberLinear(depth+1, depth, zoomFactor) - fadingDepth;
-      let alpha = Utils.interpolateNumberLinear(1, 0, (fadeLevel/(1+maxDepth-fadingDepth)));
+      
+      let alpha;
+      if (Features.ALPHA) {
+        const fadingDepth = Math.max(Math.ceil(maxDepth/2), Math.min(maxDepth, 5));
+        const fadeLevel = Utils.interpolateNumberLinear(depth+1, depth, zoomFactor) - fadingDepth;
+        alpha = Utils.interpolateNumberLinear(1, 0, (fadeLevel/(1+maxDepth-fadingDepth)));
+      }
+      else {
+        alpha = 1;
+      }
+
       ctx.fillStyle = `hsla(${(hue+hOffset)%360},${s},${l},${alpha})`;
       ctx.fill();
       
@@ -94,7 +102,7 @@ class Shape {
     }
 
     ctx.save();
-    Utils.applyTransform(ctx, { scale, rotate, scaleCenter });
+    Utils.applyTransform(ctx, { scale, rotate, center: scaleCenter });
     const matrix = ctx.getTransform();
     this.fixedPoint = Utils.fixedPoint(matrix);
     ctx.restore();

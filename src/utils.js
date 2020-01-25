@@ -36,9 +36,12 @@ function rotateAround(ctx, angle, centerX, centerY) {
 }
 
 function applyTransform(ctx, params) {
-  const { scale, rotate, scaleCenter=[0,0], rotateCenter=[0, 0] } = params;
-  scaleFrom(ctx, ...scale, ...scaleCenter);
-  rotateAround(ctx, rotate, ...rotateCenter);
+  const { scale, rotate, center} = params;
+  const [centerX, centerY] = center;
+  ctx.translate(centerX, centerY);
+  ctx.scale(...scale);
+  ctx.rotate(rotate);
+  ctx.translate(-centerX, -centerY);
 }
 
 function invertTransform(params) {
