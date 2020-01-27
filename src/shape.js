@@ -106,6 +106,8 @@ class Shape {
     const matrix = ctx.getTransform();
     this.fixedPoint = Utils.fixedPoint(matrix);
     ctx.restore();
+
+    console.log(this.fixedPoint);
   }
 
   computeDepth() {

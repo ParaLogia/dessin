@@ -13,26 +13,41 @@ class Showcase {
     this.height = canvas.height;
     this.playing = false;
     this.frameCt = 0;
-    this.shape = Shape.polygon({
-      ctx: this.ctx, 
-      sides: 4, 
-      radius: Math.min(this.width, this.height)/2
-    }); 
     this.cycleLength = 240;
     this.cycles = 0;
     
     this.animate = this.animate.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
+
+    const diagonal = Math.sqrt(this.width**2 + this.height**2);
+    this.buffer = document.createElement('canvas');
+    this.buffer.height = diagonal;
+    this.buffer.width = diagonal;
+
+    this.bufferCtx = this.buffer.getContext('2d', { alpha: Features.ALPHA })
+
+    this.shape = Shape.polygon({
+      ctx: this.bufferCtx,
+      sides: 4,
+      radius: Math.min(this.width, this.height) / 2
+    }); 
     
     this.setupCanvas();
     this.attachListeners();
 
-    requestAnimationFrame(this.animate);
+    requestAnimationFrame(() => this.animate(true));
     openModal(this.togglePlay);
   }
 
   setupCanvas() {
-    const { ctx, width, height } = this;
+    const { width, height, bufferCtx, ctx } = this;
+
+    bufferCtx.resetTransform();
+    const diagonal = Math.sqrt(width ** 2 + height ** 2);
+    bufferCtx.translate(diagonal / 2, diagonal / 2);
+    bufferCtx.scale(1, -1);
+
+    ctx.resetTransform();
     ctx.translate(width / 2, height / 2);
     ctx.scale(1, -1);
   }
@@ -95,18 +110,18 @@ class Showcase {
   }
 
   postShapeUpdate() {
-    this.ctx.resetTransform();
+    this.bufferCtx.resetTransform();
     this.shape.computeFixedPoint();
     this.setupCanvas();
     this.shape.computeDepth();
     if (!this.playing) {
-      requestAnimationFrame(this.animate);
+      requestAnimationFrame(() => this.animate(true));
     }
   }
 
   play() {
     this.playing = true;
-    requestAnimationFrame(this.animate);
+    requestAnimationFrame(() => this.animate(false));
   }
 
   togglePlay() {
@@ -117,29 +132,34 @@ class Showcase {
     }
   }
 
-  animate() {
-    const { ctx, shape, width, height, frameCt } = this;
+  animate(redraw) {
+    const { ctx, buffer, cycleLength, shape, width, height, frameCt } = this;
 
     ctx.save();
     ctx.clearRect(-width / 2, -height / 2, width, height);
-    const zoomFactor = (frameCt % this.cycleLength) / this.cycleLength;
+    const zoomFactor = (frameCt % cycleLength) / cycleLength;
 
-    shape.transform(-zoomFactor);
+    shape.transform(-zoomFactor, ctx);
 
     if (this.playing) {
       this.frameCt++;
-      if (frameCt >= this.cycleLength) {
+      if (frameCt >= cycleLength) {
         this.frameCt = 0;
         this.cycles++;
+        redraw = true;
       }
     }
     
-    shape.draw(this.cycles, zoomFactor);
+    if (redraw) {
+      shape.draw(this.cycles, zoomFactor);
+    }
+    const diagonal = Math.sqrt(width*width + height*height);
+    ctx.drawImage(buffer, (-diagonal)/2, (-diagonal)/2);
 
     ctx.restore();
 
     if (this.playing) {
-      requestAnimationFrame(this.animate);
+      requestAnimationFrame(() => this.animate(false));
     }
   }
 
@@ -162,7 +182,7 @@ class Showcase {
     hue = this.hueSlider.value;
     this.shape.hue = parseInt(hue);
     if (!this.playing) {
-      requestAnimationFrame(this.animate);
+      requestAnimationFrame(() => this.animate(true));
     }
   }
 
@@ -170,7 +190,7 @@ class Showcase {
     this.sidesSlider.value = sides;
     sides = this.sidesSlider.value;
     this.shape = Shape.polygon({
-      ctx: this.ctx,
+      ctx: this.bufferCtx,
       sides: sides,
       radius: Math.min(this.width, this.height) / 2,
       rotate: this.shape.rotate,
