@@ -74,8 +74,10 @@ class Showcase {
     canvas.addEventListener('click', this.highlightSliders);
     canvas.addEventListener('mousemove', this.highlightSliders);
     logoWrapper.addEventListener('click', () => {
+      const wasPlaying = this.playing;
       this.playing = false;
-      openModal({ animate: true })
+      const onClose = wasPlaying ? this.play : () => {};
+      openModal({ animate: true, onClose })
     });
 
     this.sliders.scale.addEventListener('input', (e) => this.setScale(e.target.value));
