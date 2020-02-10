@@ -30,7 +30,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1, 1);
-  color: rgb(211, 231, 230);
+  color: #d3e7e6;
   width: 50%;
   height: 80%;
   border-radius: 25px;
@@ -94,7 +94,16 @@
   justify-content: space-between;
 }
 
-.links i {
-  color: rgb(211, 231, 230);
+.credits p a {
+  text-decoration: underline;
+}
+
+.links a {
+  color: #d3e7e6;
   margin-left: 10px;
+  font-size: 20px;
+}
+
+a:hover {
+  color: #eee;
 }

@@ -11,6 +11,12 @@ h2 {
   font-size: 18px;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color .3s;
+}
+
 .grow-wrapper {
   flex-grow: 1;
   display: flex;
