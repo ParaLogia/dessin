@@ -23,12 +23,13 @@ class Showcase {
     
     this.animate = this.animate.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
+    this.play = this.play.bind(this);
     
     this.setupCanvas();
     this.attachListeners();
 
     requestAnimationFrame(this.animate);
-    openModal(this.togglePlay);
+    openModal({ onClose: this.play });
   }
 
   setupCanvas() {
@@ -39,6 +40,7 @@ class Showcase {
 
   attachListeners() {
     const canvas = document.getElementById('canvas');
+    const logoWrapper = document.getElementById('logo-wrapper');
     this.scaleSlider = document.getElementById('scale-slider');
     this.angleSlider = document.getElementById('angle-slider');
     this.hueSlider = document.getElementById('hue-slider');
@@ -47,6 +49,12 @@ class Showcase {
     this.offsetSlider = document.getElementById('offset-slider');
 
     canvas.addEventListener('click', this.togglePlay);
+    logoWrapper.addEventListener('click', () => {
+      this.playing = false;
+      openModal({ animate: true })
+    });
+
+
     this.scaleSlider.addEventListener('input', (e) => this.setScale(e.target.value));
     this.angleSlider.addEventListener('input', (e) => this.setAngle(e.target.value));
     this.sidesSlider.addEventListener('input', (e) => this.setSides(e.target.value));

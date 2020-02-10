@@ -1,6 +1,6 @@
 const handleModalClick = e => { e.stopPropagation() }
 
-let closingCallback = null;
+let onCloseCB = null;
 
 const closeModal = () => {
   const modal = document.getElementById('modal');
@@ -13,27 +13,37 @@ const closeModal = () => {
   modal.removeEventListener('click', handleModalClick);
 
   setTimeout(() => {
-    modal.classList.remove('hiding');
-    modalBG.classList.remove('hiding');
     modal.classList.add('hidden');
     modalBG.classList.add('hidden');
   }, 400)
 
-  if (closingCallback) {
-    closingCallback();
+  if (onCloseCB) {
+    onCloseCB();
   }
 }
 
-const openModal = (cb) => {
+const openModal = ({ animate, onClose }) => {
   const modal = document.getElementById('modal');
   const modalBG = modal.parentElement;
   const startButton = document.getElementById('start-button');
+
   modalBG.classList.remove('hidden');
   modal.classList.remove('hidden');
+  if (animate) {
+    setTimeout(() => {
+      modal.classList.remove('hiding');
+      modalBG.classList.remove('hiding');
+    }, 0)
+  }
+  
   modalBG.addEventListener('click', closeModal);
   startButton.addEventListener('click', closeModal);
   modal.addEventListener('click', handleModalClick);
-  closingCallback = cb;
+
+
+  if (onClose) {
+    onCloseCB = onClose;
+  }
 }
 
 module.exports = {
