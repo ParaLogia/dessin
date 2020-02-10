@@ -57,8 +57,8 @@ function invertTransform(params) {
 
 
 // Finds the fixed point of an affine transformation represented by a 3x3 matrix
+// Note: Input matrix should be formatted like a DOMMatrix from the Canvas API
 function fixedPoint(matrix) {
-  // const [[a, c, dx], [b, d, dy], ..._] = matrix;
   const { a, b, c, d, e: dx, f: dy } = matrix;
 
   const subMatrix = [
@@ -66,25 +66,25 @@ function fixedPoint(matrix) {
     [ 0-b,  1-d ]
   ]
   const invSubMatrix = invertMatrix(subMatrix);
-  const transVec = [dx, dy];
-  return matVecMultiply(invSubMatrix, transVec);
+  const translationVec = [dx, dy];
+  return matVecMultiply(invSubMatrix, translationVec);
 }
 
-// Inverts a matrix representing an affine transformation
-// Based on this SO answer: https://stackoverflow.com/a/10896904
+// Inverts a matrix representing an affine or linear transformation
 function invertMatrix(matrix) {
   const [[a, c, dx], [b, d, dy], ..._] = matrix;
-  // const { a, b, c, d, e: dx, f: dy } = matrix;
   
   const det = a*d - b*c; 
 
   if (dx || dy) {
+    // Affine
     return [
       [  d/det,   -c/det,   (c*dy-d*dx)/det ],
       [ -b/det,    a/det,   (b*dx-a*dy)/det ],
       [ 0,         0,       1               ]
     ]
   } else {
+    // Linear
     return [
       [  d/det,   -c/det ],
       [ -b/det,    a/det ]  
