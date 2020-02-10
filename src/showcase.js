@@ -24,6 +24,9 @@ class Showcase {
     this.animate = this.animate.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
     this.play = this.play.bind(this);
+    this.highlightSliders = this.highlightSliders.bind(this);
+
+    this.timer = null;
     
     this.setupCanvas();
     this.attachListeners();
@@ -38,32 +41,53 @@ class Showcase {
     ctx.scale(1, -1);
   }
 
+  highlightSliders() {
+    Object.values(this.sliders).forEach(slider => {
+      slider.parentElement.classList.add('active');
+    })
+
+    // Debounce the fade
+    if (this.timer) {
+      window.clearTimeout(this.timer);
+    }
+    this.timer = window.setTimeout(() => {
+      this.timer = null;
+      Object.values(this.sliders).forEach(slider => {
+        slider.parentElement.classList.remove('active');
+      })
+    }, 800)
+  }
+
   attachListeners() {
     const canvas = document.getElementById('canvas');
     const logoWrapper = document.getElementById('logo-wrapper');
-    this.scaleSlider = document.getElementById('scale-slider');
-    this.angleSlider = document.getElementById('angle-slider');
-    this.hueSlider = document.getElementById('hue-slider');
-    this.sidesSlider = document.getElementById('sides-slider');
-    this.speedSlider = document.getElementById('speed-slider');
-    this.offsetSlider = document.getElementById('offset-slider');
+
+    this.sliders = {};
+    this.sliders.scale = document.getElementById('scale-slider');
+    this.sliders.angle = document.getElementById('angle-slider');
+    this.sliders.hue = document.getElementById('hue-slider');
+    this.sliders.sides = document.getElementById('sides-slider');
+    this.sliders.speed = document.getElementById('speed-slider');
+    this.sliders.offset = document.getElementById('offset-slider');
 
     canvas.addEventListener('click', this.togglePlay);
+    canvas.addEventListener('click', this.highlightSliders);
+    canvas.addEventListener('mousemove', this.highlightSliders);
     logoWrapper.addEventListener('click', () => {
       this.playing = false;
       openModal({ animate: true })
     });
 
-
-    this.scaleSlider.addEventListener('input', (e) => this.setScale(e.target.value));
-    this.angleSlider.addEventListener('input', (e) => this.setAngle(e.target.value));
-    this.sidesSlider.addEventListener('input', (e) => this.setSides(e.target.value));
-    this.speedSlider.addEventListener('input', (e) => this.setSpeed(e.target.value));
-    this.offsetSlider.addEventListener('input', (e) => this.setOffset(e.target.value));
+    this.sliders.scale.addEventListener('input', (e) => this.setScale(e.target.value));
+    this.sliders.angle.addEventListener('input', (e) => this.setAngle(e.target.value));
+    this.sliders.sides.addEventListener('input', (e) => this.setSides(e.target.value));
+    this.sliders.speed.addEventListener('input', (e) => this.setSpeed(e.target.value));
+    this.sliders.offset.addEventListener('input', (e) => this.setOffset(e.target.value));
     if (Features.HUE_SLIDER) {
-      this.hueSlider.addEventListener('input', (e) => this.setHue(e.target.value));
+      this.sliders.hue.addEventListener('input', (e) => this.setHue(e.target.value));
     } else {
-      this.hueSlider.parentElement.removeChild(this.hueSlider);
+      this.sliders.hue.parentElement.removeChild(this.sliders.hue);
+      delete this.sliders.hue;
     }
 
     window.onresize = () => {
@@ -71,7 +95,7 @@ class Showcase {
       this.height = this.ctx.canvas.height = window.innerHeight;
       this.shape = Shape.polygon({
         ctx: this.ctx,
-        sides: this.sidesSlider.value,
+        sides: this.sliders.sides.value,
         radius: Math.min(this.width, this.height) / 2,
         scale: this.shape.scale,
         rotate: this.shape.rotate,
@@ -82,22 +106,22 @@ class Showcase {
 
     window.addEventListener('keydown', (e) => {
       if (e.keyCode === 81) {
-        this.setScale(parseFloat(this.scaleSlider.value) - 0.005);
+        this.setScale(parseFloat(this.sliders.scale.value) - 0.005);
       }
       if (e.keyCode === 87) {
-        this.setScale(parseFloat(this.scaleSlider.value) + 0.005);
+        this.setScale(parseFloat(this.sliders.scale.value) + 0.005);
       }
       if (e.keyCode === 65) {
-        this.setAngle(parseFloat(this.angleSlider.value) - 0.0025);
+        this.setAngle(parseFloat(this.sliders.angle.value) - 0.0025);
       }
       if (e.keyCode === 83) {
-        this.setAngle(parseFloat(this.angleSlider.value) + 0.0025);
+        this.setAngle(parseFloat(this.sliders.angle.value) + 0.0025);
       }
       if (e.keyCode === 219) {
-        this.setSides(parseFloat(this.sidesSlider.value) - 0.05);
+        this.setSides(parseFloat(this.sliders.sides.value) - 0.05);
       }
       if (e.keyCode === 221) {
-        this.setSides(parseFloat(this.sidesSlider.value) + 0.05);
+        this.setSides(parseFloat(this.sliders.sides.value) + 0.05);
       }
     })
   }
@@ -152,22 +176,22 @@ class Showcase {
   }
 
   setScale(scale) {
-    this.scaleSlider.value = scale;
-    scale = this.scaleSlider.value;
+    this.sliders.scale.value = scale;
+    scale = this.sliders.scale.value;
     this.shape.scale = [scale, scale];
     this.postShapeUpdate();
   }
 
   setAngle(angle) {
-    this.angleSlider.value = angle;
-    angle = this.angleSlider.value;
+    this.sliders.angle.value = angle;
+    angle = this.sliders.angle.value;
     this.shape.rotate = parseFloat(angle) * Math.PI;
     this.postShapeUpdate();
   }
 
   setHue(hue) {
-    this.hueSlider.value = hue;
-    hue = this.hueSlider.value;
+    this.sliders.hue.value = hue;
+    hue = this.sliders.hue.value;
     this.shape.hue = parseInt(hue);
     if (!this.playing) {
       requestAnimationFrame(this.animate);
@@ -175,8 +199,8 @@ class Showcase {
   }
 
   setSides(sides) {
-    this.sidesSlider.value = sides;
-    sides = this.sidesSlider.value;
+    this.sliders.sides.value = sides;
+    sides = this.sliders.sides.value;
     this.shape = Shape.polygon({
       ctx: this.ctx,
       sides: sides,
@@ -190,8 +214,8 @@ class Showcase {
   }
 
   setSpeed(speed) {
-    this.speedSlider.value = speed;
-    speed = this.speedSlider.value;
+    this.sliders.speed.value = speed;
+    speed = this.sliders.speed.value;
     const prevCycleLength = this.cycleLength;
     this.cycleLength = Math.round(Utils.interpolateNumberLogarithmic(
       MAX_CYCLE_LENGTH,
@@ -203,8 +227,8 @@ class Showcase {
   }
 
   setOffset(offset) {
-    this.offsetSlider.value = offset;
-    offset = this.offsetSlider.value;
+    this.sliders.offset.value = offset;
+    offset = this.sliders.offset.value;
     const radius = Math.min(this.width, this.height)/2;
     this.shape.scaleCenter = [0, Utils.interpolateNumberLinear(0, radius, offset)];
     this.postShapeUpdate();

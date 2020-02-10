@@ -89,15 +89,15 @@ body {
   }
 
   .slider-wrapper {
-    opacity: 40%;
-    transition: opacity .3s;
+    opacity: .4;
+    transition: opacity .7s;
     width: 90%;
     padding: 3px;
     display: flex;
     justify-content: center;
 
-    &:hover {
-      opacity: 100%;
+    &:hover, &.active {
+      opacity: 1;
     }
   }
 }
