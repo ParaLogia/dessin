@@ -155,7 +155,8 @@ class Showcase {
     const { ctx, shape, width, height, frameCt } = this;
 
     ctx.save();
-    ctx.clearRect(-width / 2, -height / 2, width, height);
+    ctx.fillStyle = "#46724b"
+    ctx.fillRect(-width / 2, -height / 2, width, height);
     const zoomFactor = (frameCt % this.cycleLength) / this.cycleLength;
 
     shape.transform(-zoomFactor);
