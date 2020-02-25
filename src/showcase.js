@@ -12,21 +12,23 @@ class Showcase {
     this.width = canvas.width;
     this.height = canvas.height;
     this.playing = false;
-    this.frameCt = 0;
     this.shape = Shape.polygon({
       ctx: this.ctx, 
       sides: 4, 
       radius: Math.min(this.width, this.height)/2
     }); 
     this.cycleLength = 240;
+
+    this.debounceTimer = null;
+
+    this.zoomFactor = 1;
+    this.prevTime = null;
     this.cycles = 0;
     
     this.animate = this.animate.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
     this.play = this.play.bind(this);
     this.highlightSliders = this.highlightSliders.bind(this);
-
-    this.timer = null;
     
     this.setupCanvas();
     this.attachListeners();
@@ -47,11 +49,11 @@ class Showcase {
     })
 
     // Debounce the fade
-    if (this.timer) {
-      window.clearTimeout(this.timer);
+    if (this.debounceTimer) {
+      window.clearTimeout(this.debounceTimer);
     }
-    this.timer = window.setTimeout(() => {
-      this.timer = null;
+    this.debounceTimer = window.setTimeout(() => {
+      this.debounceTimer = null;
       Object.values(this.sliders).forEach(slider => {
         slider.parentElement.classList.remove('active');
       })
@@ -75,7 +77,7 @@ class Showcase {
     canvas.addEventListener('mousemove', this.highlightSliders);
     logoWrapper.addEventListener('click', () => {
       const wasPlaying = this.playing;
-      this.playing = false;
+      this.pause()
       const onClose = wasPlaying ? this.play : () => {};
       openModal({ animate: true, onClose })
     });
@@ -143,38 +145,44 @@ class Showcase {
     requestAnimationFrame(this.animate);
   }
 
+  pause() {
+    this.playing = false;
+    this.prevTime = null
+  }
+
   togglePlay() {
     if (this.playing) {
-      this.playing = false;
+      this.pause();
     } else {
       this.play();
     }
   }
 
-  animate() {
-    const { ctx, shape, width, height, frameCt } = this;
+  animate(time) {
+    const { ctx, shape, width, height } = this;
+
+    const timeDelta = time - (this.prevTime || time);
+    const step = 1 / (10*(this.shape.rotate+1)*this.cycleLength);
+    this.zoomFactor = (this.zoomFactor + timeDelta * step);
+
+    if (this.playing && this.zoomFactor > 1) {
+      this.zoomFactor = this.zoomFactor % 1;
+      this.cycles++;
+    }
 
     ctx.save();
     ctx.fillStyle = "#46724b"
     ctx.fillRect(-width / 2, -height / 2, width, height);
-    const zoomFactor = (frameCt % this.cycleLength) / this.cycleLength;
 
-    shape.transform(-zoomFactor);
-
-    if (this.playing) {
-      this.frameCt++;
-      if (frameCt >= this.cycleLength) {
-        this.frameCt = 0;
-        this.cycles++;
-      }
-    }
+    shape.transform(-this.zoomFactor);
     
-    shape.draw(this.cycles, zoomFactor);
+    shape.draw(this.cycles, this.zoomFactor);
 
     ctx.restore();
 
     if (this.playing) {
       requestAnimationFrame(this.animate);
+      this.prevTime = time;
     }
   }
 
@@ -219,13 +227,11 @@ class Showcase {
   setSpeed(speed) {
     this.sliders.speed.value = speed;
     speed = this.sliders.speed.value;
-    const prevCycleLength = this.cycleLength;
     this.cycleLength = Math.round(Utils.interpolateNumberLogarithmic(
       MAX_CYCLE_LENGTH,
       MIN_CYCLE_LENGTH,
       speed
     ));
-    this.frameCt = Math.round(this.frameCt * (this.cycleLength / prevCycleLength));
     this.postShapeUpdate();
   }
 
