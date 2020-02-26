@@ -160,6 +160,8 @@ class Showcase {
           this.setSpeed(0.5);
           if (Features.HUE_SLIDER)
             this.setHue(127);
+          
+          this.zoomFactor = 1;
           break;
 
         case 32: // Spacebar
