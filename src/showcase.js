@@ -153,13 +153,17 @@ class Showcase {
           break;
           
         case 82:  // R
-          this.setScale(0.705)
-          this.setAngle(0.25)
+          this.setScale(0.705);
+          this.setAngle(0.25);
           this.setSides(4);
           this.setOffset(0);
-          this.setSpeed(0.5)
+          this.setSpeed(0.5);
           if (Features.HUE_SLIDER)
-            this.setHue(127)
+            this.setHue(127);
+          break;
+
+        case 32: // Spacebar
+          this.togglePlay()
           break;
 
       }
