@@ -3,8 +3,8 @@ const Utils = require('./utils');
 const Features = require('./features');
 const { openModal } = require('./modal');
 
-const MIN_CYCLE_LENGTH = 30;
-const MAX_CYCLE_LENGTH = 480;
+const MIN_CYCLE_LENGTH = 60;
+const MAX_CYCLE_LENGTH = 960;
 
 class Showcase {
   constructor(canvas) {
@@ -109,23 +109,66 @@ class Showcase {
     }
 
     window.addEventListener('keydown', (e) => {
-      if (e.keyCode === 81) {
-        this.setScale(parseFloat(this.sliders.scale.value) - 0.005);
+      switch (e.keyCode) {
+        case 81:  // Q
+          this.setScale(parseFloat(this.sliders.scale.value) - 0.005);
+          break;
+
+        case 87:  // W
+          this.setScale(parseFloat(this.sliders.scale.value) + 0.005);
+          break;
+
+        case 65:  // A
+          this.setAngle(parseFloat(this.sliders.angle.value) - 0.0025);
+          break;
+
+        case 83:  // S
+          this.setAngle(parseFloat(this.sliders.angle.value) + 0.0025);
+          break;
+          
+        case 90:  // Z
+          if (Features.HUE_SLIDER)
+            this.setHue(parseFloat(this.sliders.hue.value) - 1);
+          break;
+          
+        case 88:  // X
+          if (Features.HUE_SLIDER)
+            this.setHue(parseFloat(this.sliders.hue.value) + 1);
+          break;
+          
+        case 79:  // O
+          this.setSides(parseFloat(this.sliders.sides.value) - 0.05);
+          break;
+          
+        case 80:  // P        
+          this.setSides(parseFloat(this.sliders.sides.value) + 0.05);
+          break;
+          
+        case 75:  // K   
+          this.setOffset(parseFloat(this.sliders.offset.value) - 0.005);
+          break;
+          
+        case 76:  // L
+          this.setOffset(parseFloat(this.sliders.offset.value) + 0.005);
+          break;
+          
+        case 82:  // R
+          this.setScale(0.705)
+          this.setAngle(0.25)
+          this.setSides(4);
+          this.setOffset(0);
+          this.setSpeed(0.5)
+          if (Features.HUE_SLIDER)
+            this.setHue(127)
+          break;
+
       }
-      if (e.keyCode === 87) {
-        this.setScale(parseFloat(this.sliders.scale.value) + 0.005);
+
+      if (e.keyCode === 75) { // K
       }
-      if (e.keyCode === 65) {
-        this.setAngle(parseFloat(this.sliders.angle.value) - 0.0025);
+      if (e.keyCode === 76) { // L
       }
-      if (e.keyCode === 83) {
-        this.setAngle(parseFloat(this.sliders.angle.value) + 0.0025);
-      }
-      if (e.keyCode === 219) {
-        this.setSides(parseFloat(this.sliders.sides.value) - 0.05);
-      }
-      if (e.keyCode === 221) {
-        this.setSides(parseFloat(this.sliders.sides.value) + 0.05);
+      if (e.keyCode === 76) { // L
       }
     })
   }
