@@ -1,7 +1,7 @@
 
 #start-button {
   padding: 20px 30px;
-  margin: 10px 0px;
+  margin: 10px auto;
   background: #2d3632;
   color: rgb(211, 231, 230);
   font-size: 24px;
@@ -77,12 +77,13 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
 }
 
 .warning {
-  font-size: 14px;
+  font-size: 0.9em;
   color: #000a;
+  text-align: center;
 }
 
 .credits {
